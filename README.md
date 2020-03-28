@@ -20,7 +20,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 **First Step:** fork and clone the project repo to your local machine<br>
 **Second step:** Read description and architecture of the project from the project wiki page (feel free to introduce better approach)
 
-> How to send Peer
+> How to send Peer reques
 1. Feel free add new/change mini-targets of the project in [Project Status](#Status) Section
 2. Make sure that documentation is updated according to your changes.
 
