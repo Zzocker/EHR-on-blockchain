@@ -1,0 +1,67 @@
+package main
+
+// DocTyp of blockchain data
+// used for doing rich query
+const (
+	REPORT    = "REPORT"
+	DRUGS     = "DRUGS"
+	TESTS     = "TESTS"
+	TREATMENT = "TREATMENT"
+	CONSENT   = "CONSENT"
+)
+
+// Report of patient
+type Report struct {
+	DocTyp    string `json:"docTyp"`
+	ID        string `json:"report_id"`
+	PatientID string `json:"patient_id"`
+	// DrugsID []string `json:"drugs_id"`      			///
+	// TreatmentID []string `json:"treatment_id"`		/// these will be stored
+	// TestID []string `json:"test_id"`					///
+	Status      string           `json:"status"`
+	RefDoctorID string           `json:"doctor_id"`
+	Comments    map[int64]string `json:"comments"`
+}
+
+// Drugs model
+type Drugs struct {
+	DocTyp    string            `json:"docTyp"`
+	ID        string            `json:"drugs_id"`
+	For       string            `json:"patient__id"`
+	RefDoctor string            `json:"ref_doctor"`
+	Drug      map[string]string `josn:"drug"`   // name of drug mapped to doses
+	Status    int               `json:"status"` // 0 - requested 1 - given
+	Ignored   map[string]string // name of ignored drugs mapped to when will that be 	available
+}
+
+// Test model file
+type Test struct {
+	DocTyp            string   `json:"docTyp"`
+	ID                string   `json:"test_id"`
+	MediaFileLocation []string `json:"media_file_location"`
+	Name              string   `json:"test_name"`
+	Supervisor        []byte   `json:"supervisor_details"` // this will name of supervisor, aadress , path Lab
+	RefDoctor         string   `json:"ref_doctor"`
+	Status            int      `json:"status"` // status of test 0 - not done 1 - done
+}
+
+// Treatment model
+type Treatment struct {
+	DocTyp     string           `json:"docTyp"`
+	ID         string           `json:"treatment_id"`
+	Supervisor []byte           `json:"supervisor_details"` // deatils of nurses , doctor
+	RefDoctor  string           `json:"ref_doctor"`
+	Name       string           `josn:"treatment_name"`
+	Comments   map[int64]string `json:"comments"`
+	Status     int              // 0 not done 1 done
+}
+
+// Consent model file
+type Consent struct {
+	DocTyp              string           `json:"docTyp"`
+	ID                  string           `json:"patient_aadhaar"`
+	PermanentConsenters map[string]bool  `json:"parma_consenters"` // list of parmanent consenter
+	TemporaryConsenters map[string]int64 `josn:"temp_consenters"`  // id of consenters mapped to expiry time unix
+	Status              string           `json:"status"`           // defined status crises status
+	Track               []string         `json:"track"`            // track to who he/she meet (id)
+}
