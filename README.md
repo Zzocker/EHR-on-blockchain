@@ -28,12 +28,12 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 
 ### Blockchain
 
-- :white_large_square: Chaincode
-    * :white_large_square: Medical Report
-    * :white_large_square: Drugs
-    * :white_large_square: Tests
-    * :white_large_square: Treatment
-    * :white_large_square: Consent
+- :heavy_check_mark: Chaincode
+    * :heavy_check_mark: Medical Report
+    * :heavy_check_mark: Drugs
+    * :heavy_check_mark: Tests
+    * :heavy_check_mark: Treatment
+    * :heavy_check_mark: Consent
 - :white_large_square: Fabric Network configuration
 - :white_large_square: Fabric SDK
     * :white_large_square: Doctor Side

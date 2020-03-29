@@ -1,0 +1,10 @@
+{
+    "index": {
+        "fields": [
+            "docTyp",
+            "create_time"
+        ]
+    },
+    "name": "OnCreatedTime",
+    "type": "json"
+}

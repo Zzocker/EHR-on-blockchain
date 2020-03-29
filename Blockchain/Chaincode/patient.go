@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	. "fmt"
+	"time"
+
+	"github.com/hyperledger/fabric-protos-go/ledger/queryresult"
 )
 
 func (c *Chaincode) RegisterPatient(ctx CustomTransactionContextInterface, aadhaar, permCon string) error {
@@ -57,4 +60,75 @@ func (c *Chaincode) UpdatePermConsent(ctx CustomTransactionContextInterface, con
 	consentAsByte, _ := json.Marshal(consent)
 
 	return ctx.GetStub().PutState(consent.ID, consentAsByte)
+}
+
+func (c *Chaincode) getByte(ctx CustomTransactionContextInterface, key string) ([]byte, error) {
+	AsByte, _ := ctx.GetStub().GetState(key)
+	if AsByte == nil {
+		return []byte{}, Errorf("No state with key %v", key)
+	}
+	return AsByte, nil
+}
+
+func (c *Chaincode) checkConsent(ctx CustomTransactionContextInterface, consentID, checkFor string) bool {
+	consentAsyte, err := c.getByte(ctx, consentID)
+	if err != nil {
+		return false
+	}
+	var consent Consent
+	json.Unmarshal(consentAsyte, &consent)
+
+	for k := range consent.PermanentConsenters {
+		if checkFor == k {
+			return true
+		}
+	}
+	for k, v := range consent.TemporaryConsenters {
+		if checkFor == k && v >= time.Now().Unix() {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, queryS, qtype string) ([]Test, error) {
+	var output []Test
+	var query string
+	if qtype == CREATED {
+		query = `{"use_index": "OnCreatedTime",`
+	} else if qtype == UPDATED {
+		query = `{"use_index": "OnUpdatedTime",`
+	} else {
+		return []Test{}, Errorf("Error : No such query type %v for lead", qtype)
+	}
+	query += `
+			"selector": {
+				"docTyp": "TESTS"`
+	query += queryS
+	worldState, _ := ctx.GetStub().GetState(WORLDSTATE)
+	// to add into selector , ---new selector----}}
+	// not to selector , --},new :----}
+	result, err := ctx.GetStub().GetQueryResult(query)
+	if err != nil {
+		return []Test{}, err
+	}
+	for result.HasNext() {
+		var resultKV *queryresult.KV
+
+		resultKV, _ = result.Next()
+		var test Test
+		json.Unmarshal(resultKV.GetValue(), &test)
+		if ok := c.checkConsent(ctx, test.PatientID, requester); !ok && (worldState == 0) {
+			continue
+		}
+		if test.TypeOfT != 1 {
+			continue
+		}
+		output = append(output, test)
+	}
+	return output, result.Close()
+}
+
+func (c *Chaincode) GetStateAsyte(ctx CustomTransactionContextInterface, key string) ([]byte, error) {
+	return c.getByte(ctx, key)
 }

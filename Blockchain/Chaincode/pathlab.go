@@ -1,4 +1,5 @@
 package main
+
 import (
 	"encoding/json"
 	. "fmt"
@@ -7,24 +8,29 @@ import (
 	"github.com/google/uuid"
 )
 
-func (c *Chaincode) DoTest(ctx CustomTransactionContextInterface,testID,supervisor string,numberOfMfile int)([]string,error) {
-	existing:= ctx.GetData()
-	if existing==nil{
-		return []string{},Errorf("test with ID: %v doesn't exists",testID)
+type OutputResult struct {
+	MediaFile []string `josn:"media_file"`
+	Type      int      `json:"type_of_test"`
+}
+
+func (c *Chaincode) DoTest(ctx CustomTransactionContextInterface, testID, result, supervisor string, numberOfMfile int) (OutputResult, error) {
+	existing := ctx.GetData()
+	if existing == nil {
+		return OutputResult{}, Errorf("test with ID: %v doesn't exists", testID)
 	}
 	var test Test
-	json.Unmarshal(existing,&test)
+	json.Unmarshal(existing, &test)
 	if test.Status == 1 {
-		return []string{},Errorf("test is already done")
+		return OutputResult{}, Errorf("test is already done")
 	}
-	mfileID = uuid.New().String()
-	test.UpdateTime=time.Now().Unix()
-	for i:=0;i<numberOfMfile;i++{
-		test.MediaFileLocation = append(test.MediaFileLocation,uuid.New().String())
+	test.UpdateTime = time.Now().Unix()
+	for i := 0; i < numberOfMfile; i++ {
+		test.MediaFileLocation = append(test.MediaFileLocation, uuid.New().String())
 	}
 	test.Supervisor = supervisor
-	test.Status=1
-	testAsByte,_:= json.Marshal(test)
+	test.Status = 1
+	test.Result = result
+	testAsByte, _ := json.Marshal(test)
 
-	return test.MediaFileLocation,ctx.GetStub().PutState(test.ID,testAsByte)
+	return OutputResult{MediaFile: test.MediaFileLocation, Type: test.TypeOfT}, ctx.GetStub().PutState(test.ID, testAsByte)
 }

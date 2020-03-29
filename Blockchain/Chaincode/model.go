@@ -44,11 +44,14 @@ type Test struct {
 	DocTyp            string   `json:"docTyp"`
 	ReportID          string   `json:"report_id"`
 	ID                string   `json:"test_id"`
+	PatientID         string   `json:"patient_id"`
 	MediaFileLocation []string `json:"media_file_location"`
 	Name              string   `json:"test_name"`
 	Supervisor        string   `json:"supervisor_details"` // this will name of supervisor, aadress , path Lab
 	RefDoctor         string   `json:"ref_doctor"`
-	Status            int      `json:"status"` // status of test 0 - not done 1 - done
+	Result            string   `json:"test_result"`
+	Status            int      `json:"status"`       // status of test 0 - not done 1 - done
+	TypeOfT           int      `json:"type_of_test"` // 0- normal 1-abnormal
 	CreateTime        int64    `json:"create_time"`
 	UpdateTime        int64    `josn:"updated_time"`
 }
@@ -56,6 +59,7 @@ type Test struct {
 // Treatment model
 type Treatment struct {
 	DocTyp            string           `json:"docTyp"`
+	PatientID         string           `json:"patient_id"`
 	ReportID          string           `json:"report_id"`
 	ID                string           `json:"treatment_id"`
 	Supervisor        string           `json:"supervisor_details"` // deatils of nurses , doctor
