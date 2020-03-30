@@ -18,7 +18,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 
 ## Contributing
 **First Step:** fork and clone the project repo to your local machine<br>
-**Second step:** Read description and architecture of the project from the project [wiki](https://github.com/Zzocker/EHR-on-blockchain.wiki.git) page (feel free to introduce better approach)
+**Second step:** Read description and architecture of the project from the project [wiki](https://github.com/Zzocker/EHR-on-blockchain/wiki) page (feel free to introduce better approach)
 
 > How to send Peer request
 1. Feel free add new/change mini-targets of the project in [Project Status](#Status) Section
