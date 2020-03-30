@@ -20,7 +20,7 @@ type Report struct {
 	// TestID []string `json:"test_id"`					///
 	Status      string           `json:"status"`
 	RefDoctorID string           `json:"doctor_id"`
-	Comments    map[int64]string `json:"comments"`
+	Comments    map[string]string `json:"comments"`
 	CreateTime  int64            `json:"create_time"`
 	UpdateTime  int64            `josn:"updated_time"`
 }
@@ -66,7 +66,7 @@ type Treatment struct {
 	RefDoctor         string           `json:"ref_doctor"`
 	Name              string           `josn:"treatment_name"`
 	MediaFileLocation []string         `josn:"media_file_location"`
-	Comments          map[int64]string `json:"comments"`
+	Comments          map[string]string `json:"comments"`
 	Status            int              // 0 not done 1 started 2  done 3 failed
 	CreateTime        int64            `json:"create_time"`
 	UpdateTime        int64            `josn:"updated_time"`

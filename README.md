@@ -11,11 +11,25 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 - [Contributing](#Contributing)
 - [Project Status](#Status)
 - [Tools and Technology Used](#Stack)
-- [Contributors](#Contributors)
 
 
 ## Installation
 
+### Install Docker
+    > chmod +x docker.sh
+    > sudo ./docker.sh
+    > usermod -a -G docker ${USER}
+### Start Local Test Fabric Network
+    > cd Blockchain/test-network
+    > docker-compose up -d
+    > docker exec -it cli bash
+    > cd channel-artifacts && ./joinchannel.sh
+    > cd $GOPATH/src/chaincode && go mod vendor
+    > cd .. && peer lifecycle chaincode package health.tar.gz --label health -p chaincode
+    > peer lifecycle chaincode install health.tar.gz 
+    > export CC_PACKAGE=health:----------64hexdigit number----------
+    > peer lifecycle chaincode approveformyorg -C test -n health --package-id $CC_PACKAGE -v 1.0 -o orderer:7050 --sequence 1
+    > peer lifecycle chaincode commit -C test -n health -v 1.0 -o orderer:7050 --sequence 1
 ## Contributing
 **First Step:** fork and clone the project repo to your local machine<br>
 **Second step:** Read description and architecture of the project from the project [wiki](https://github.com/Zzocker/EHR-on-blockchain/wiki) page (feel free to introduce better approach)
@@ -35,6 +49,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
     * :heavy_check_mark: Treatment
     * :heavy_check_mark: Consent
 - :white_large_square: Fabric Network configuration
+    * :heavy_check_mark: Local Fabric Network for Test
 - :white_large_square: Fabric SDK
     * :white_large_square: Doctor Side
     * :white_large_square: Hospital Side
@@ -76,9 +91,4 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 - Kubernetes
 - AWS (VPCs and EC2s)
 
-## Contributors
-
- |<a href="https://github.com/Zzocker"  target="_blank">**Pritam Singh**</a> 
-
-[![Pritam Singh](https://avatars1.githubusercontent.com/u/43764373?s=200&u=6a3ef280e24c5ffe3b5e108338e028ca4e0745e4&v=4)](https://www.linkedin.com/in/pritam-singh-b1807617b/) | 
 

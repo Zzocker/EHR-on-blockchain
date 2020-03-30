@@ -1,0 +1,13 @@
+OrdererOrgs:
+  - Name: DevOrdere
+    Domain: orderer
+    Specs:
+      - Hostname: orderer
+        CommonName: "{{.Hostname}}"
+PeerOrgs:
+  - Name: DevOrg
+    Domain: devorg
+    Specs:
+      - Hostname: devpeer
+        CommonName: "{{.Hostname}}"
+    EnableNodeOUs: true

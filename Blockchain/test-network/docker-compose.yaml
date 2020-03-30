@@ -1,0 +1,85 @@
+version: '2'
+networks: 
+  test:
+volumes: 
+  devpeer:
+  devpeer-worldstate:
+  orderer:
+
+services: 
+  devpeer:
+    container_name: devpeer
+    extends: 
+      file: base/base.yaml
+      service: peer-base
+    environment: 
+      - CORE_PEER_ID=devpeer
+      - CORE_PEER_ADDRESS=devpeer:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=devpeer:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=devpeer:7051
+      - CORE_PEER_LOCALMSPID=DevMSP
+
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=database:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    volumes: 
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/devorg/peers/devpeer/msp:/etc/hyperledger/fabric/msp
+        - devpeer:/var/hyperledger/production
+    networks: 
+      - test
+  
+  orderer:
+    extends:
+      file:   ./base/base.yaml
+      service: orderer-base
+    container_name: orderer
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/orderer/orderers/orderer/msp:/var/hyperledger/orderer/msp
+        - orderer:/var/hyperledger/production/orderer
+    networks: 
+       - test
+
+
+  database:
+        container_name: database
+        image: hyperledger/fabric-couchdb
+        environment:
+            - COUCHDB_USER=
+            - COUCHDB_PASSWORD=
+        volumes:
+            - devpeer-worldstate:/opt/couchdb
+        networks:
+            - test
+        ports: 
+          - 5984:5984
+        depends_on:
+          - devpeer
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:2.0
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=devpeer:7051
+      - CORE_PEER_LOCALMSPID=DevMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/devorg/users/Admin@devorg/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../Chaincode/:/opt/gopath/src/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      - test

@@ -16,7 +16,7 @@ func (c *Chaincode) CreateNewReport(ctx CustomTransactionContextInterface, patie
 		PatientID:   patientID,
 		Status:      "0",
 		RefDoctorID: refDoctor,
-		Comments:    make(map[int64]string),
+		Comments:    make(map[string]string),
 		CreateTime:  time.Now().Unix(),
 		UpdateTime:  time.Now().Unix(),
 	}

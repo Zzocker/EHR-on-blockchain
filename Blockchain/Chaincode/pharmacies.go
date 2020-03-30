@@ -31,5 +31,5 @@ func (c *Chaincode) GiveDrugs(ctx CustomTransactionContextInterface, drugID stri
 	drugs.UpdateTime = time.Now().Unix()
 	drugAsByte, _ := json.Marshal(drugs)
 
-	return ctx.GetStub().GetState(drugs.ID, drugAsByte)
+	return ctx.GetStub().PutState(drugs.ID, drugAsByte)
 }

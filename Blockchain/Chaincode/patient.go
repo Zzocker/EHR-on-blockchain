@@ -91,7 +91,7 @@ func (c *Chaincode) checkConsent(ctx CustomTransactionContextInterface, consentI
 	return false
 }
 
-func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, queryS, qtype string) ([]Test, error) {
+func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (TestOutput, error) {
 	var output []Test
 	var query string
 	if qtype == CREATED {
@@ -99,18 +99,17 @@ func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, qu
 	} else if qtype == UPDATED {
 		query = `{"use_index": "OnUpdatedTime",`
 	} else {
-		return []Test{}, Errorf("Error : No such query type %v for lead", qtype)
+		return TestOutput{}, Errorf("Error : No such query type %v for lead", qtype)
 	}
 	query += `
 			"selector": {
 				"docTyp": "TESTS"`
 	query += queryS
-	worldState, _ := ctx.GetStub().GetState(WORLDSTATE)
 	// to add into selector , ---new selector----}}
 	// not to selector , --},new :----}
 	result, err := ctx.GetStub().GetQueryResult(query)
 	if err != nil {
-		return []Test{}, err
+		return TestOutput{}, err
 	}
 	for result.HasNext() {
 		var resultKV *queryresult.KV
@@ -118,7 +117,7 @@ func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, qu
 		resultKV, _ = result.Next()
 		var test Test
 		json.Unmarshal(resultKV.GetValue(), &test)
-		if ok := c.checkConsent(ctx, test.PatientID, requester); !ok && (worldState == 0) {
+		if ok := c.checkConsent(ctx, test.PatientID, requester); !ok {
 			continue
 		}
 		if test.TypeOfT != 1 {
@@ -126,7 +125,7 @@ func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, qu
 		}
 		output = append(output, test)
 	}
-	return output, result.Close()
+	return TestOutput{Result: output}, result.Close()
 }
 
 func (c *Chaincode) GetStateAsyte(ctx CustomTransactionContextInterface, key string) ([]byte, error) {

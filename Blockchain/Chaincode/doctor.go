@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	. "fmt"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,6 +14,16 @@ const (
 	CREATED = "CREATED"
 	UPDATED = "UPDATED"
 )
+
+type ReportOutput struct {
+	Result []Report `josn:"reports"`
+}
+type TreatmentOutput struct {
+	Result []Treatment `json:"result"`
+}
+type TestOutput struct {
+	Result []Test `json:"result"`
+}
 
 func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, patientID, name, refDoctor string, typeoftest int) (string, error) {
 	if ctx.GetData() == nil {
@@ -53,7 +64,7 @@ func (c *Chaincode) RefTreatment(ctx CustomTransactionContextInterface, reportID
 		ID:         id,
 		RefDoctor:  refDoctor,
 		Name:       name,
-		Comments:   make(map[int64]string),
+		Comments:   make(map[string]string),
 		Status:     0,
 		CreateTime: time.Now().Unix(),
 		UpdateTime: time.Now().Unix(),
@@ -109,8 +120,10 @@ func (c *Chaincode) AddCommentsToReport(ctx CustomTransactionContextInterface, r
 	if ok := c.checkConsent(ctx, report.PatientID, refDoctor); !ok {
 		return Errorf("No consent from the patient")
 	}
-	report.UpdateTime = time.Now().Unix()
-	report.Comments[time.Now().Unix()] = comment
+	timeNow := time.Now().Unix()
+	stringTime := strconv.FormatInt(timeNow, 10)
+	report.UpdateTime = timeNow
+	report.Comments[stringTime] = comment
 	reportAsByte, _ := json.Marshal(report)
 
 	return ctx.GetStub().PutState(report.ID, reportAsByte)
@@ -128,14 +141,16 @@ func (c *Chaincode) AddCommentsToTreatment(ctx CustomTransactionContextInterface
 	if treatment.Status == 2 {
 		Errorf("Treatment is already completed")
 	}
-	treatment.Comments[time.Now().Unix()] = comment
+	timeNow := time.Now().Unix()
+	stringTime := strconv.FormatInt(timeNow, 10)
+	treatment.Comments[stringTime] = comment
 
-	treatment.UpdateTime = time.Now().Unix()
+	treatment.UpdateTime = timeNow
 	treatmentAsByte, _ := json.Marshal(treatment)
 	return ctx.GetStub().PutState(treatment.ID, treatmentAsByte)
 }
 
-func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester, queryS, qtype string) ([]Report, error) {
+func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (ReportOutput, error) {
 	var output []Report
 	var query string
 	if qtype == CREATED {
@@ -143,7 +158,7 @@ func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester,
 	} else if qtype == UPDATED {
 		query = `{"use_index": "OnUpdatedTime",`
 	} else {
-		return []Report{}, Errorf("Error : No such query type %v for lead", qtype)
+		return ReportOutput{}, Errorf("Error : No such query type %v for lead", qtype)
 	}
 	query += `
 			"selector": {
@@ -154,7 +169,7 @@ func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester,
 	// not to selector , --},new :----}
 	result, err := ctx.GetStub().GetQueryResult(query)
 	if err != nil {
-		return []Report{}, err
+		return ReportOutput{}, err
 	}
 	for result.HasNext() {
 		var resultKV *queryresult.KV
@@ -167,10 +182,10 @@ func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester,
 		}
 		output = append(output, report)
 	}
-	return output, result.Close()
+	return ReportOutput{Result: output}, result.Close()
 }
 
-func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requester, queryS, qtype string) ([]Treatment, error) {
+func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (TreatmentOutput, error) {
 	var output []Treatment
 	var query string
 	if qtype == CREATED {
@@ -178,7 +193,7 @@ func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requeste
 	} else if qtype == UPDATED {
 		query = `{"use_index": "OnUpdatedTime",`
 	} else {
-		return []Treatment{}, Errorf("Error : No such query type %v for lead", qtype)
+		return TreatmentOutput{}, Errorf("Error : No such query type %v for lead", qtype)
 	}
 	query += `
 			"selector": {
@@ -189,7 +204,7 @@ func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requeste
 	// not to selector , --},new :----}
 	result, err := ctx.GetStub().GetQueryResult(query)
 	if err != nil {
-		return []Treatment{}, err
+		return TreatmentOutput{}, err
 	}
 	for result.HasNext() {
 		var resultKV *queryresult.KV
@@ -202,5 +217,5 @@ func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requeste
 		}
 		output = append(output, treatment)
 	}
-	return output, result.Close()
+	return TreatmentOutput{Result: output}, result.Close()
 }
