@@ -1,0 +1,100 @@
+name: testnetwork
+version: 1.0
+x-type: hlfv1
+description: "a gateway for test network"
+
+channels:
+  test:
+    orderers:
+      - orderer
+    peers:
+      devpeer:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+    chaincodes:
+      - health
+
+organizations:
+  devorg:
+    mspid: DevMSP
+    peers:
+      - devpeer
+    certificateAuthorities:
+      - ca
+
+orderers:
+  orderer:
+    url: grpc://localhost:7050
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICQjCCAemgAwIBAgIQZ0YKfBJ4UZtzOPhtKg7UCzAKBggqhkjOPQQDAjBsMQsw
+        CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy
+        YW5jaXNjbzEUMBIGA1UEChMLb3JkZXJlci5jb20xGjAYBgNVBAMTEXRsc2NhLm9y
+        ZGVyZXIuY29tMB4XDTIwMDMyMDEyMjYwMFoXDTMwMDMxODEyMjYwMFowbDELMAkG
+        A1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFu
+        Y2lzY28xFDASBgNVBAoTC29yZGVyZXIuY29tMRowGAYDVQQDExF0bHNjYS5vcmRl
+        cmVyLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLOQ+hLe5319YVVNAFfd
+        WJvW8qmqwpUmamp2z65aFg4kSxPQcsdwdUAWBESo6NfjGUtGD+BGB6lAvPnRhgJL
+        2vSjbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYB
+        BQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNVHQ4EIgQgMNgunJpLVamYgk91Y+xR
+        wJ/TsndzsjmhCqcfRioDWVUwCgYIKoZIzj0EAwIDRwAwRAIgKbXu55s/Ezef/c/t
+        NGWRPF7a84A41NaxcbZ2NDgRWn0CIAoARPdqwx7/vRLqwINNWuP7agsqTRcjAaVd
+        yskT7Cmv
+        -----END CERTIFICATE-----
+    grpcOptions:
+      ssl-target-name-override: orderer
+      hostnameOverride: orderer
+
+peers:
+  devpeer:
+    url: grpc://localhost:7051
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICLzCCAdagAwIBAgIRAM5m/GHRCQFL792vt3w8lVIwCgYIKoZIzj0EAwIwYjEL
+        MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+        cmFuY2lzY28xDzANBgNVBAoTBmRldm9yZzEVMBMGA1UEAxMMdGxzY2EuZGV2b3Jn
+        MB4XDTIwMDMzMDE0MjAwMFoXDTMwMDMyODE0MjAwMFowYjELMAkGA1UEBhMCVVMx
+        EzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xDzAN
+        BgNVBAoTBmRldm9yZzEVMBMGA1UEAxMMdGxzY2EuZGV2b3JnMFkwEwYHKoZIzj0C
+        AQYIKoZIzj0DAQcDQgAE40pgVEfvA3+eCrFRMnysGwpHO/TomS3PuRgm6ubAK7V0
+        /JngjUwHsOUWqzfSv5fqhxkxK9mB8jpLT7tGfUuYz6NtMGswDgYDVR0PAQH/BAQD
+        AgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTAD
+        AQH/MCkGA1UdDgQiBCCSrhZcWMDsvQRRPitni9EKlCIp65QXBqznsCJsvX43uDAK
+        BggqhkjOPQQDAgNHADBEAiBJ7Kse/63P8bDygLLBREeBCXRtAM89kkKZiAv7F8VC
+        zgIgToW8MohoOt5ef83C2JrY+BG9VM/2bN0RZ9Ccl5EwYHs=
+        -----END CERTIFICATE-----
+    grpcOptions:
+      ssl-target-name-override: devpeer
+      hostnameOverride: devpeer
+
+certificateAuthorities:
+  ca:
+    url: http://localhost:7054
+    caName: ca
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICLzCCAdagAwIBAgIRAM5m/GHRCQFL792vt3w8lVIwCgYIKoZIzj0EAwIwYjEL
+        MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+        cmFuY2lzY28xDzANBgNVBAoTBmRldm9yZzEVMBMGA1UEAxMMdGxzY2EuZGV2b3Jn
+        MB4XDTIwMDMzMDE0MjAwMFoXDTMwMDMyODE0MjAwMFowYjELMAkGA1UEBhMCVVMx
+        EzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xDzAN
+        BgNVBAoTBmRldm9yZzEVMBMGA1UEAxMMdGxzY2EuZGV2b3JnMFkwEwYHKoZIzj0C
+        AQYIKoZIzj0DAQcDQgAE40pgVEfvA3+eCrFRMnysGwpHO/TomS3PuRgm6ubAK7V0
+        /JngjUwHsOUWqzfSv5fqhxkxK9mB8jpLT7tGfUuYz6NtMGswDgYDVR0PAQH/BAQD
+        AgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTAD
+        AQH/MCkGA1UdDgQiBCCSrhZcWMDsvQRRPitni9EKlCIp65QXBqznsCJsvX43uDAK
+        BggqhkjOPQQDAgNHADBEAiBJ7Kse/63P8bDygLLBREeBCXRtAM89kkKZiAv7F8VC
+        zgIgToW8MohoOt5ef83C2JrY+BG9VM/2bN0RZ9Ccl5EwYHs=
+        -----END CERTIFICATE-----
+    grpcOptions:
+      ssl-target-name-override: ca
+      hostnameOverride: ca
+
+
+
+    

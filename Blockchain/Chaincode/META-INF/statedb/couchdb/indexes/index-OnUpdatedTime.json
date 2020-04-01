@@ -5,6 +5,7 @@
             "updated_time"
         ]
     },
+    "ddoc": "OnUpdatedTime",
     "name": "OnUpdatedTime",
     "type": "json"
 }

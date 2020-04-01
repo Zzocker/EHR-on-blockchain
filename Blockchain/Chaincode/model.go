@@ -22,7 +22,7 @@ type Report struct {
 	RefDoctorID string           `json:"doctor_id"`
 	Comments    map[string]string `json:"comments"`
 	CreateTime  int64            `json:"create_time"`
-	UpdateTime  int64            `josn:"updated_time"`
+	UpdateTime  int64            `json:"updated_time"`
 }
 
 // Drugs model

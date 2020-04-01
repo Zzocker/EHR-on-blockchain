@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/hyperledger/fabric-protos-go/ledger/queryresult"
 )
 
 const (
@@ -29,9 +28,16 @@ func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, pat
 	if ctx.GetData() == nil {
 		return "", Errorf("Report with ID %v doesn't exists", reportID)
 	}
-	if ok := c.checkConsent(ctx, patientID, refDoctor); !ok {
+
+	var report Report
+	json.Unmarshal(ctx.GetData(), &report)
+	// if report.Doctor != doc from certs {
+	// 	return Errorf("Cannot prescribe drug from the patient")
+	// }
+	if ok := c.checkConsent(ctx, report.PatientID, refDoctor); !ok {
 		return "", Errorf("No consent from the patient")
 	}
+
 	id := uuid.New().String()
 	test := Test{
 		DocTyp:     TESTS,
@@ -42,7 +48,7 @@ func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, pat
 		Status:     0,
 		CreateTime: time.Now().Unix(),
 		UpdateTime: time.Now().Unix(),
-		PatientID:  patientID,
+		PatientID:  report.PatientID,
 	}
 	if typeoftest == 1 {
 		test.TypeOfT = 1
@@ -50,11 +56,17 @@ func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, pat
 	testAsByte, _ := json.Marshal((test))
 	return test.ID, ctx.GetStub().PutState(id, testAsByte)
 }
-func (c *Chaincode) RefTreatment(ctx CustomTransactionContextInterface, reportID, patientID, refDoctor, name string) (string, error) {
+func (c *Chaincode) RefTreatment(ctx CustomTransactionContextInterface, reportID, refDoctor, name string) (string, error) {
 	if ctx.GetData() == nil {
 		return "", Errorf("Report with ID %v doesn't exists", reportID)
 	}
-	if ok := c.checkConsent(ctx, patientID, refDoctor); !ok {
+
+	var report Report
+	json.Unmarshal(ctx.GetData(), &report)
+	// if report.Doctor != doc from certs {
+	// 	return Errorf("Cannot prescribe drug from the patient")
+	// }
+	if ok := c.checkConsent(ctx, report.PatientID, refDoctor); !ok {
 		return "", Errorf("No consent from the patient")
 	}
 	id := uuid.New().String()
@@ -68,7 +80,7 @@ func (c *Chaincode) RefTreatment(ctx CustomTransactionContextInterface, reportID
 		Status:     0,
 		CreateTime: time.Now().Unix(),
 		UpdateTime: time.Now().Unix(),
-		PatientID:  patientID,
+		PatientID:  report.PatientID,
 	}
 	treatmentAsByte, _ := json.Marshal(treatment)
 	return treatment.ID, ctx.GetStub().PutState(treatment.ID, treatmentAsByte)
@@ -131,7 +143,7 @@ func (c *Chaincode) AddCommentsToReport(ctx CustomTransactionContextInterface, r
 
 func (c *Chaincode) AddCommentsToTreatment(ctx CustomTransactionContextInterface, treatmentID, superviosr, comment string) error {
 	if ctx.GetData() == nil {
-		return Errorf("Report with ID %v doesn't exists", treatmentID)
+		return Errorf("Treatment with ID %v doesn't exists", treatmentID)
 	}
 	var treatment Treatment
 	json.Unmarshal(ctx.GetData(), &treatment)
@@ -150,72 +162,19 @@ func (c *Chaincode) AddCommentsToTreatment(ctx CustomTransactionContextInterface
 	return ctx.GetStub().PutState(treatment.ID, treatmentAsByte)
 }
 
-func (c *Chaincode) GetReports(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (ReportOutput, error) {
-	var output []Report
-	var query string
-	if qtype == CREATED {
-		query = `{"use_index": "OnCreatedTime",`
-	} else if qtype == UPDATED {
-		query = `{"use_index": "OnUpdatedTime",`
-	} else {
-		return ReportOutput{}, Errorf("Error : No such query type %v for lead", qtype)
+func (c *Chaincode) AddMediaToTreatment(ctx CustomTransactionContextInterface, treatmentID, superviosr string, numberOfMfile int) ([]string, error) {
+	if ctx.GetData() == nil {
+		return []string{}, Errorf("Treatment with ID %v doesn't exists", treatmentID)
 	}
-	query += `
-			"selector": {
-				"docTyp": "REPORT"`
-	query += queryS
-	// worldState, _ := ctx.GetStub().GetState(WORLDSTATE)
-	// to add into selector , ---new selector----}}
-	// not to selector , --},new :----}
-	result, err := ctx.GetStub().GetQueryResult(query)
-	if err != nil {
-		return ReportOutput{}, err
+	var treatment Treatment
+	json.Unmarshal(ctx.GetData(), &treatment)
+	if ok := c.checkConsent(ctx, treatment.PatientID, superviosr); !ok {
+		return []string{}, Errorf("No consent from the patient")
 	}
-	for result.HasNext() {
-		var resultKV *queryresult.KV
-
-		resultKV, _ = result.Next()
-		var report Report
-		json.Unmarshal(resultKV.GetValue(), &report)
-		if ok := c.checkConsent(ctx, report.PatientID, requester); !ok {
-			continue
-		}
-		output = append(output, report)
+	for i := 0; i < numberOfMfile; i++ {
+		treatment.MediaFileLocation = append(treatment.MediaFileLocation, uuid.New().String())
 	}
-	return ReportOutput{Result: output}, result.Close()
-}
-
-func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (TreatmentOutput, error) {
-	var output []Treatment
-	var query string
-	if qtype == CREATED {
-		query = `{"use_index": "OnCreatedTime",`
-	} else if qtype == UPDATED {
-		query = `{"use_index": "OnUpdatedTime",`
-	} else {
-		return TreatmentOutput{}, Errorf("Error : No such query type %v for lead", qtype)
-	}
-	query += `
-			"selector": {
-				"docTyp": "TREATMENT"`
-	query += queryS
-	// worldState, _ := ctx.GetStub().GetState(WORLDSTATE)
-	// to add into selector , ---new selector----}}
-	// not to selector , --},new :----}
-	result, err := ctx.GetStub().GetQueryResult(query)
-	if err != nil {
-		return TreatmentOutput{}, err
-	}
-	for result.HasNext() {
-		var resultKV *queryresult.KV
-
-		resultKV, _ = result.Next()
-		var treatment Treatment
-		json.Unmarshal(resultKV.GetValue(), &treatment)
-		if ok := c.checkConsent(ctx, treatment.PatientID, requester); !ok {
-			continue
-		}
-		output = append(output, treatment)
-	}
-	return TreatmentOutput{Result: output}, result.Close()
+	treatment.UpdateTime = time.Now().Unix()
+	treatmentAsByte, _ := json.Marshal(treatment)
+	return treatment.MediaFileLocation, ctx.GetStub().PutState(treatment.ID, treatmentAsByte)
 }

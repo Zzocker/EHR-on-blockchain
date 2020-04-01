@@ -5,7 +5,7 @@ volumes:
   devpeer:
   devpeer-worldstate:
   orderer:
-
+  data-ca:
 services: 
   devpeer:
     container_name: devpeer
@@ -31,6 +31,8 @@ services:
         - devpeer:/var/hyperledger/production
     networks: 
       - test
+    ports: 
+      - 7051:7051
   
   orderer:
     extends:
@@ -43,6 +45,8 @@ services:
         - orderer:/var/hyperledger/production/orderer
     networks: 
        - test
+    ports: 
+      - 7050:7050
 
 
   database:
@@ -83,3 +87,18 @@ services:
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
       - test
+  
+  ca:
+        container_name: ca
+        extends:
+            file: ./base/base.yaml
+            service: ca-base
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca
+        volumes:
+            - ./crypto-config/peerOrganizations/devorg/ca:/ca
+            - data-ca:/etc/hyperledger/fabric-ca-server
+        ports:
+            - 7054:7054
+        networks:
+            - test

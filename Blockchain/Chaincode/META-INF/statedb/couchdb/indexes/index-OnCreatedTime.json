@@ -5,6 +5,7 @@
             "create_time"
         ]
     },
+    "ddoc" : "OnCreatedTime",
     "name": "OnCreatedTime",
     "type": "json"
 }

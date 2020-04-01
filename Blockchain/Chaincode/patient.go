@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	. "fmt"
 	"time"
-
-	"github.com/hyperledger/fabric-protos-go/ledger/queryresult"
 )
 
 func (c *Chaincode) RegisterPatient(ctx CustomTransactionContextInterface, aadhaar, permCon string) error {
+	existing := ctx.GetData()
+	if existing != nil {
+		return Errorf("Aadhaar ID allready exists")
+	}
 	consent := Consent{
 		DocTyp:              CONSENT,
 		ID:                  aadhaar,
@@ -91,43 +93,40 @@ func (c *Chaincode) checkConsent(ctx CustomTransactionContextInterface, consentI
 	return false
 }
 
-func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, requester, queryS, qtype string) (TestOutput, error) {
-	var output []Test
-	var query string
-	if qtype == CREATED {
-		query = `{"use_index": "OnCreatedTime",`
-	} else if qtype == UPDATED {
-		query = `{"use_index": "OnUpdatedTime",`
-	} else {
-		return TestOutput{}, Errorf("Error : No such query type %v for lead", qtype)
+func (c *Chaincode) GetTest(ctx CustomTransactionContextInterface, key, requester string) (Test, error) {
+	existing := ctx.GetData()
+	if existing == nil {
+		return Test{}, Errorf("Test with ID %v does'nt exists", key)
 	}
-	query += `
-			"selector": {
-				"docTyp": "TESTS"`
-	query += queryS
-	// to add into selector , ---new selector----}}
-	// not to selector , --},new :----}
-	result, err := ctx.GetStub().GetQueryResult(query)
-	if err != nil {
-		return TestOutput{}, err
-	}
-	for result.HasNext() {
-		var resultKV *queryresult.KV
 
-		resultKV, _ = result.Next()
-		var test Test
-		json.Unmarshal(resultKV.GetValue(), &test)
-		if ok := c.checkConsent(ctx, test.PatientID, requester); !ok {
-			continue
-		}
-		if test.TypeOfT != 1 {
-			continue
-		}
-		output = append(output, test)
+	var test Test
+	json.Unmarshal(existing, &test)
+	if ok := c.checkConsent(ctx, test.PatientID, requester); !ok && test.TypeOfT == 0 {
+		return Test{}, Errorf("Please get consent form the Patient")
 	}
-	return TestOutput{Result: output}, result.Close()
+	return test, nil
 }
-
-func (c *Chaincode) GetStateAsyte(ctx CustomTransactionContextInterface, key string) ([]byte, error) {
-	return c.getByte(ctx, key)
+func (c *Chaincode) GetReport(ctx CustomTransactionContextInterface, key, requester string) (Report, error) {
+	existing := ctx.GetData()
+	if existing == nil {
+		return Report{}, Errorf("Report with ID %v does'nt exists", key)
+	}
+	var report Report
+	json.Unmarshal(existing, &report)
+	if ok := c.checkConsent(ctx, report.PatientID, requester); !ok {
+		return Report{}, Errorf("Please get consent form the Patient")
+	}
+	return report, nil
+}
+func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, key, requester string) (Treatment, error) {
+	existing := ctx.GetData()
+	if existing == nil {
+		return Treatment{}, Errorf("Treatment with ID %v does'nt exists", key)
+	}
+	var treatment Treatment
+	json.Unmarshal(existing, &treatment)
+	if ok := c.checkConsent(ctx, treatment.PatientID, requester); !ok {
+		return Treatment{}, Errorf("Please get consent form the Patient")
+	}
+	return treatment, nil
 }

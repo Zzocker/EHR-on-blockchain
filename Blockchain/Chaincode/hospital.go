@@ -9,6 +9,9 @@ import (
 )
 
 func (c *Chaincode) CreateNewReport(ctx CustomTransactionContextInterface, patientID, refDoctor string) (string, error) {
+	if ctx.GetData() == nil {
+		return "", Errorf("Patient of ID %v doesn't exists", patientID)
+	}
 	id := uuid.New().String()
 	report := Report{
 		DocTyp:      REPORT,
