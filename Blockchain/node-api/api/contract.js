@@ -22,10 +22,11 @@ const contract =  async (type,inputs,callback) =>{
          } else if (type == "QUERY"){
             res = await contract.evaluateTransaction(...inputs)
          }
-         callback(null,res)
+         return callback(null,res)
       } catch (error) {
-          callback(error.responses[0].response,null)
-       } finally {
+         //  callback(error.responses[0].response,null)
+          return callback(error.responses[0].response,null)
+       } finally{
           gateway.disconnect()
        }
 }

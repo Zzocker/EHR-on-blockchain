@@ -16,12 +16,12 @@ type OutputResult struct {
 func (c *Chaincode) DoTest(ctx CustomTransactionContextInterface, testID, result, supervisor string, numberOfMfile int) (OutputResult, error) {
 	existing := ctx.GetData()
 	if existing == nil {
-		return OutputResult{}, Errorf("test with ID: %v doesn't exists", testID)
+		return OutputResult{MediaFile: []string{}}, Errorf("test with ID: %v doesn't exists", testID)
 	}
 	var test Test
 	json.Unmarshal(existing, &test)
 	if test.Status == 1 {
-		return OutputResult{}, Errorf("test is already done")
+		return OutputResult{MediaFile: []string{}}, Errorf("test is already done")
 	}
 	test.UpdateTime = time.Now().Unix()
 	for i := 0; i < numberOfMfile; i++ {

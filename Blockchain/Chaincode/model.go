@@ -18,11 +18,11 @@ type Report struct {
 	// DrugsID []string `json:"drugs_id"`      			///
 	// TreatmentID []string `json:"treatment_id"`		/// these will be stored
 	// TestID []string `json:"test_id"`					///
-	Status      string           `json:"status"`
-	RefDoctorID string           `json:"doctor_id"`
+	Status      string            `json:"status"`
+	RefDoctorID string            `json:"doctor_id"`
 	Comments    map[string]string `json:"comments"`
-	CreateTime  int64            `json:"create_time"`
-	UpdateTime  int64            `json:"updated_time"`
+	CreateTime  int64             `json:"create_time"`
+	UpdateTime  int64             `json:"updated_time"`
 }
 
 // Drugs model
@@ -33,8 +33,8 @@ type Drugs struct {
 	For        string            `json:"patient__id"`
 	RefDoctor  string            `json:"ref_doctor"`
 	Drug       map[string]string `josn:"drug"`   // name of drug mapped to doses
-	Status     int               `json:"status"` // 0 - requested 1- not all given 2 - all given
-	Ignored    map[string]string // name of ignored drugs mapped to when will that be 	available
+	Status     int               `json:"status"` // 0 - requested 1-  given
+	Pending    map[string]string // name of ignored drugs mapped to when will that be 	available
 	CreateTime int64             `json:"create_time"`
 	UpdateTime int64             `josn:"updated_time"`
 }
@@ -58,18 +58,18 @@ type Test struct {
 
 // Treatment model
 type Treatment struct {
-	DocTyp            string           `json:"docTyp"`
-	PatientID         string           `json:"patient_id"`
-	ReportID          string           `json:"report_id"`
-	ID                string           `json:"treatment_id"`
-	Supervisor        string           `json:"supervisor_details"` // deatils of nurses , doctor
-	RefDoctor         string           `json:"ref_doctor"`
-	Name              string           `josn:"treatment_name"`
-	MediaFileLocation []string         `josn:"media_file_location"`
+	DocTyp            string            `json:"docTyp"`
+	PatientID         string            `json:"patient_id"`
+	ReportID          string            `json:"report_id"`
+	ID                string            `json:"treatment_id"`
+	Supervisor        string            `json:"supervisor_details"` // deatils of nurses , doctor
+	RefDoctor         string            `json:"ref_doctor"`
+	Name              string            `josn:"treatment_name"`
+	MediaFileLocation []string          `josn:"media_file_location"`
 	Comments          map[string]string `json:"comments"`
-	Status            int              // 0 not done 1 started 2  done 3 failed
-	CreateTime        int64            `json:"create_time"`
-	UpdateTime        int64            `josn:"updated_time"`
+	Status            int               // 0 not done 1 started 2  done 3 failed
+	CreateTime        int64             `json:"create_time"`
+	UpdateTime        int64             `josn:"updated_time"`
 }
 
 // Consent model file

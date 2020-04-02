@@ -24,7 +24,7 @@ type TestOutput struct {
 	Result []Test `json:"result"`
 }
 
-func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, patientID, name, refDoctor string, typeoftest int) (string, error) {
+func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, name, refDoctor string, typeoftest int) (string, error) {
 	if ctx.GetData() == nil {
 		return "", Errorf("Report with ID %v doesn't exists", reportID)
 	}
@@ -104,7 +104,7 @@ func (c *Chaincode) PrescribeDrugs(ctx CustomTransactionContextInterface, report
 		RefDoctor:  refDoctor,
 		Drug:       make(map[string]string),
 		Status:     0,
-		Ignored:    make(map[string]string),
+		Pending:    make(map[string]string),
 		CreateTime: time.Now().Unix(),
 		UpdateTime: time.Now().Unix(),
 	}
@@ -113,6 +113,7 @@ func (c *Chaincode) PrescribeDrugs(ctx CustomTransactionContextInterface, report
 	}
 	for i, d := range drug {
 		drugs.Drug[d] = doses[i]
+		drugs.Pending[d] = "init"
 	}
 	drugsAsByte, _ := json.Marshal(drugs)
 

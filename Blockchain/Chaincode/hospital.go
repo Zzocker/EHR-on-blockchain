@@ -33,6 +33,9 @@ func (c *Chaincode) StartTreatment(ctx CustomTransactionContextInterface, treatm
 	}
 	var treatment Treatment
 	json.Unmarshal(ctx.GetData(), &treatment)
+	if treatment.Status != 0 {
+		return Errorf("Cannot start allready started treatment")
+	}
 	treatment.Supervisor = supervisor
 	treatment.Status = 1
 	treatment.UpdateTime = time.Now().Unix()
