@@ -1,1 +1,4 @@
-health.tar.gz
+.
+!channel.tx
+!genesis.block
+!joinchannel.sh

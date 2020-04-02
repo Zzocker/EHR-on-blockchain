@@ -6,6 +6,7 @@ volumes:
   devpeer-worldstate:
   orderer:
   data-ca:
+
 services: 
   devpeer:
     container_name: devpeer
@@ -102,3 +103,10 @@ services:
             - 7054:7054
         networks:
             - test
+  # bcnodeapi:
+  #   container_name: bcnodeapi
+  #   image: zzocker20/bc-node-api
+  #   networks: 
+  #     - test
+  #   ports: 
+  #     - 3000:3000

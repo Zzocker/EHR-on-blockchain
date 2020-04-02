@@ -16,7 +16,6 @@ func (c *Chaincode) RegisterPatient(ctx CustomTransactionContextInterface, aadha
 		ID:                  aadhaar,
 		PermanentConsenters: make(map[string]bool),
 		TemporaryConsenters: make(map[string]int64),
-		Status:              "Normal",
 	}
 	consent.PermanentConsenters[aadhaar] = true
 	consent.PermanentConsenters[permCon] = true
@@ -129,4 +128,17 @@ func (c *Chaincode) GetTreatment(ctx CustomTransactionContextInterface, key, req
 		return Treatment{}, Errorf("Please get consent form the Patient")
 	}
 	return treatment, nil
+}
+
+func (c *Chaincode) GetDrugs(ctx CustomTransactionContextInterface, key, requester string) (Drugs, error) {
+	existing := ctx.GetData()
+	if existing == nil {
+		return Drugs{}, Errorf("Treatment with ID %v does'nt exists", key)
+	}
+	var drugs Drugs
+	json.Unmarshal(existing, &drugs)
+	if ok := c.checkConsent(ctx, drugs.For, requester); !ok {
+		return Drugs{}, Errorf("Please get consent form the Patient")
+	}
+	return drugs, nil
 }

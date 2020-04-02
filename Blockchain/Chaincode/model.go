@@ -78,6 +78,6 @@ type Consent struct {
 	ID                  string           `json:"patient_aadhaar"`
 	PermanentConsenters map[string]bool  `json:"parma_consenters"` // list of parmanent consenter
 	TemporaryConsenters map[string]int64 `josn:"temp_consenters"`  // id of consenters mapped to expiry time unix
-	Status              string           `json:"status"`           // defined status crises status
-	Track               []string         `json:"track"`            // track to who he/she meet (id)
+// 	Status              string           `json:"status"`           // defined status crises status
+// 	Track               []string         `json:"track"`            // track to who he/she meet (id)
 }

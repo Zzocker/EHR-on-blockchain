@@ -24,7 +24,7 @@ const contract =  async (type,inputs,callback) =>{
          }
          return callback(null,res)
       } catch (error) {
-         //  callback(error.responses[0].response,null)
+         //  callback(error,null)
           return callback(error.responses[0].response,null)
        } finally{
           gateway.disconnect()

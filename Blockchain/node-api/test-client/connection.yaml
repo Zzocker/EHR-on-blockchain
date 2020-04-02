@@ -94,7 +94,3 @@ certificateAuthorities:
     grpcOptions:
       ssl-target-name-override: ca
       hostnameOverride: ca
-
-
-
-    
