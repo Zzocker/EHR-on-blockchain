@@ -50,7 +50,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
     * :heavy_check_mark: Consent
 - :white_large_square: Fabric Network configuration
     * :heavy_check_mark: Local Fabric Network for Test
-- :white_large_square: Fabric SDK
+- :white_large_square: Fabric SDK [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/a76327a3785763703ffc)
     * :white_large_square: Doctor Side
     * :white_large_square: Hospital Side
     * :white_large_square: Medical Board side
