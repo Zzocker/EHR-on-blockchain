@@ -1,8 +1,11 @@
 const fs = require('fs')
 const yaml = require('js-yaml')
+const path = require('path')
 const {Wallets,Gateway} = require('fabric-network')
-const CONNECTION_PROFILE_PATH= "../test-client/connection.yaml"
-const WALLET_PATH="../test-client/wallet"
+
+const CONNECTION_PROFILE_PATH = path.resolve(__dirname,"../test-client/connection.yaml")
+const WALLET_PATH= path.resolve(__dirname,"../test-client/wallet")
+
 const IDENTITY_NAME = "client"
 const CHANNEL_NAME = "test"
 const CONTRACT_NAME="health"
@@ -13,7 +16,7 @@ const contract =  async (type,inputs,callback) =>{
        try {
          const ccp = yaml.safeLoad(fs.readFileSync(CONNECTION_PROFILE_PATH))
          const wallet = await Wallets.newFileSystemWallet(WALLET_PATH)
-         await gateway.connect(ccp,{wallet:wallet,identity:IDENTITY_NAME})
+         await gateway.connect(ccp,{wallet:wallet,identity:IDENTITY_NAME,discovery: { enabled: false, asLocalhost: true }})
          const network = await gateway.getNetwork(CHANNEL_NAME)
          const contract = network.getContract(CONTRACT_NAME)
          var res
