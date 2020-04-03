@@ -105,7 +105,7 @@ services:
             - test
   bcnodeapi:
     container_name: bcnodeapi
-    image: zzocker20/blockchain/napi
+    image: zzocker20/fabricnodeapi
     networks: 
       - test
     ports: 
