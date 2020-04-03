@@ -28,7 +28,7 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     volumes: 
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/devorg/peers/devpeer/msp:/etc/hyperledger/fabric/msp
+        - ./Blockchain/test-network/crypto-config/peerOrganizations/devorg/peers/devpeer/msp:/etc/hyperledger/fabric/msp
         - devpeer:/var/hyperledger/production
     networks: 
       - test
@@ -41,8 +41,8 @@ services:
       service: orderer-base
     container_name: orderer
     volumes:
-        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - ./crypto-config/ordererOrganizations/orderer/orderers/orderer/msp:/var/hyperledger/orderer/msp
+        - ./Blockchain/test-network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./Blockchain/test-network/crypto-config/ordererOrganizations/orderer/orderers/orderer/msp:/var/hyperledger/orderer/msp
         - orderer:/var/hyperledger/production/orderer
     networks: 
        - test
@@ -83,9 +83,9 @@ services:
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
-        - ../Chaincode/:/opt/gopath/src/chaincode
-        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto
-        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+        - ./Blockchain/Chaincode/:/opt/gopath/src/chaincode
+        - ./Blockchain/test-network/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto
+        - ./Blockchain/test-network/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
       - test
   
