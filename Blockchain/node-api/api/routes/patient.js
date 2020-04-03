@@ -29,4 +29,17 @@ routes.put('/giveconsent',(req,res)=>{
     })
 })
 
+routes.put('/permconsent',(req,res)=>{
+    contract("INVOKE",["UpdatePermConsent",req.body.aadhaar,req.body.type,req.body.to],(err,payload)=>{
+        if (err){
+            res.status(500).json(err)
+        }
+        else{
+            res.status(200).json({
+                "message":`successfully given consent to ${req.body.to} till ${req.body.till}`
+            })
+        }
+    })
+})
+
 module.exports = routes

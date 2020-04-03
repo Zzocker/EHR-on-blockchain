@@ -11,7 +11,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 - [Contributing](#Contributing)
 - [Project Status](#Status)
 - [Tools and Technology Used](#Stack)
-
+- [Google Docs](https://drive.google.com/open?id=1lrcfMYx-DvzWgwxbWq62cdAP2u8Pg0VP)
 
 ## Installation
 
