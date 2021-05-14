@@ -5,8 +5,6 @@ import (
 	. "fmt"
 	"strconv"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const (
@@ -15,7 +13,7 @@ const (
 )
 
 type ReportOutput struct {
-	Result []Report `josn:"reports"`
+	Result []Report `json:"reports"`
 }
 type TreatmentOutput struct {
 	Result []Treatment `json:"result"`
@@ -38,18 +36,18 @@ func (c *Chaincode) RefTest(ctx CustomTransactionContextInterface, reportID, nam
 		return "", Errorf("No consent from the patient")
 	}
 
-	id := uuid.New().String()
+	id := TESTS + getSafeRandomString(ctx.GetStub())
 	test := Test{
-		DocTyp:     TESTS,
-		ReportID:   reportID,
-		ID:         id,
-		Name:       name,
-		RefDoctor:  refDoctor,
-		Status:     0,
+		DocTyp:            TESTS,
+		ReportID:          reportID,
+		ID:                id,
+		Name:              name,
+		RefDoctor:         refDoctor,
+		Status:            0,
 		MediaFileLocation: []string{},
-		CreateTime: time.Now().Unix(),
-		UpdateTime: time.Now().Unix(),
-		PatientID:  report.PatientID,
+		CreateTime:        time.Now().Unix(),
+		UpdateTime:        time.Now().Unix(),
+		PatientID:         report.PatientID,
 	}
 	if typeoftest == 1 {
 		test.TypeOfT = 1
@@ -70,19 +68,19 @@ func (c *Chaincode) RefTreatment(ctx CustomTransactionContextInterface, reportID
 	if ok := c.checkConsent(ctx, report.PatientID, refDoctor); !ok {
 		return "", Errorf("No consent from the patient")
 	}
-	id := uuid.New().String()
+	id := TREATMENT + getSafeRandomString(ctx.GetStub())
 	treatment := Treatment{
-		DocTyp:     TREATMENT,
-		ReportID:   reportID,
-		ID:         id,
-		RefDoctor:  refDoctor,
-		Name:       name,
-		Comments:   make(map[string]string),
-		Status:     0,
+		DocTyp:            TREATMENT,
+		ReportID:          reportID,
+		ID:                id,
+		RefDoctor:         refDoctor,
+		Name:              name,
+		Comments:          make(map[string]string),
+		Status:            0,
 		MediaFileLocation: []string{},
-		CreateTime: time.Now().Unix(),
-		UpdateTime: time.Now().Unix(),
-		PatientID:  report.PatientID,
+		CreateTime:        time.Now().Unix(),
+		UpdateTime:        time.Now().Unix(),
+		PatientID:         report.PatientID,
 	}
 	treatmentAsByte, _ := json.Marshal(treatment)
 	return treatment.ID, ctx.GetStub().PutState(treatment.ID, treatmentAsByte)
@@ -98,7 +96,7 @@ func (c *Chaincode) PrescribeDrugs(ctx CustomTransactionContextInterface, report
 	if ok := c.checkConsent(ctx, report.PatientID, refDoctor); !ok {
 		return "", Errorf("No consent from the patient")
 	}
-	id := uuid.New().String()
+	id := DRUGS + getSafeRandomString(ctx.GetStub())
 	drugs := Drugs{
 		DocTyp:     DRUGS,
 		ReportID:   reportID,
@@ -151,10 +149,10 @@ func (c *Chaincode) AddCommentsToTreatment(ctx CustomTransactionContextInterface
 	var treatment Treatment
 	json.Unmarshal(ctx.GetData(), &treatment)
 	if ok := c.checkConsent(ctx, treatment.PatientID, superviosr); !ok {
-		return Errorf("No consent from the patient")
+		return Errorf("no consent from the patient")
 	}
 	if treatment.Status == 2 {
-		Errorf("Treatment is already completed")
+		return Errorf("Treatment is already completed")
 	}
 	timeNow := time.Now().Unix()
 	stringTime := strconv.FormatInt(timeNow, 10)
@@ -175,7 +173,8 @@ func (c *Chaincode) AddMediaToTreatment(ctx CustomTransactionContextInterface, t
 		return []string{}, Errorf("No consent from the patient")
 	}
 	for i := 0; i < numberOfMfile; i++ {
-		treatment.MediaFileLocation = append(treatment.MediaFileLocation, uuid.New().String())
+		id := TREATMENT + "media" + getSafeRandomString(ctx.GetStub()) + strconv.Itoa(i)
+		treatment.MediaFileLocation = append(treatment.MediaFileLocation, id)
 	}
 	treatment.UpdateTime = time.Now().Unix()
 	treatmentAsByte, _ := json.Marshal(treatment)

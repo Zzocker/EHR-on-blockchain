@@ -3,9 +3,8 @@ package main
 import (
 	"encoding/json"
 	. "fmt"
+	"strconv"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type OutputResult struct {
@@ -25,7 +24,7 @@ func (c *Chaincode) DoTest(ctx CustomTransactionContextInterface, testID, result
 	}
 	test.UpdateTime = time.Now().Unix()
 	for i := 0; i < numberOfMfile; i++ {
-		test.MediaFileLocation = append(test.MediaFileLocation, uuid.New().String())
+		test.MediaFileLocation = append(test.MediaFileLocation, getSafeRandomString(ctx.GetStub())+strconv.Itoa(i))
 	}
 	test.Supervisor = supervisor
 	test.Status = 1

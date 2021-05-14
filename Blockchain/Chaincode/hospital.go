@@ -4,15 +4,13 @@ import (
 	"encoding/json"
 	. "fmt"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 func (c *Chaincode) CreateNewReport(ctx CustomTransactionContextInterface, patientID, refDoctor string) (string, error) {
 	if ctx.GetData() == nil {
 		return "", Errorf("Patient of ID %v doesn't exists", patientID)
 	}
-	id := uuid.New().String()
+	id := REPORT + getSafeRandomString(ctx.GetStub())
 	report := Report{
 		DocTyp:      REPORT,
 		ID:          id,

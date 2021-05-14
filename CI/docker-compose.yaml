@@ -5,7 +5,7 @@ volumes:
   devpeer:
   devpeer-worldstate:
   orderer:
-  # data-ca:
+  data-ca:
 
 services: 
   devpeer:
@@ -89,20 +89,20 @@ services:
     networks:
       - test
   
-  # ca:
-  #       container_name: ca
-  #       extends:
-  #           file: ./base/base.yaml
-  #           service: ca-base
-  #       environment:
-  #           - FABRIC_CA_SERVER_CA_NAME=ca
-  #       volumes:
-  #           - ./crypto-config/peerOrganizations/devorg/ca:/ca
-  #           - data-ca:/etc/hyperledger/fabric-ca-server
-  #       ports:
-  #           - 7054:7054
-  #       networks:
-  #           - test
+  ca:
+        container_name: ca
+        extends:
+            file: ./base/base.yaml
+            service: ca-base
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca
+        volumes:
+            - ../Blockchain/test-network/crypto-config/peerOrganizations/devorg/ca:/ca
+            - data-ca:/etc/hyperledger/fabric-ca-server
+        ports:
+            - 7054:7054
+        networks:
+            - test
   bcnodeapi:
     container_name: bcnodeapi
     image: zzocker20/fabricnodeapi

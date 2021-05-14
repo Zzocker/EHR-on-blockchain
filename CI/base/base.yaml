@@ -50,6 +50,7 @@ services:
   ca-base:
     image: hyperledger/fabric-ca:latest
     environment:
+        - FABRIC_LOGGING_SPEC=INFO
         - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
         - CORE_VM_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_crm
         - FABRIC_CA_SERVER_TLS_ENABLED=false
