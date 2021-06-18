@@ -1,0 +1,346 @@
+{
+    "info": {
+        "_postman_id": "048be6b3-4630-4011-8072-0622582b21a4",
+        "name": "HealthCare",
+        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Patient",
+            "item": [
+                {
+                    "name": "register patient to network",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"aadhaar\":\"24545\",\n\t\"consenter\": \"54879\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/patient/register"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "give Temporery consent ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"aadhaar\":\"24545\",\n\t\"type\": \"ADD\",\n\t\"to\": \"1\",\n\t\"till\": \"1585886650\" \n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/patient/giveconsent"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "hospital",
+            "item": [
+                {
+                    "name": "create new report for patient",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"patient_id\":\"24545\",\n\t\"ref_doctor\": \"1\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/hospital/createreport"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "start treatment",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "treatment_id",
+                                "value": "8ca40955-2071-4b28-a037-d1c8866688ff",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"supervisor\":\"25\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/hospital/starttreatment"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "doctor",
+            "item": [
+                {
+                    "name": "add comment to reports",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "report_id",
+                                "value": "8bbd3936-3f25-4ee5-a228-0789172dd131",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"comment\":\"This is first comment\",\n\t\"ref_doctor\":\"1\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/doctor//report/addcomment",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "doctor",
+                                "",
+                                "report",
+                                "addcomment"
+                            ],
+                            "query": [
+                                {
+                                    "key": "report_id",
+                                    "value": "8bbd3936-3f25-4ee5-a228-0789172dd131",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Ref test to patient",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "report_id",
+                                "value": "8bbd3936-3f25-4ee5-a228-0789172dd131",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\":\"COIVD-19\",\n\t\"ref_doctor\": \"1\",\n\t\"type_of_test\":\"1\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/doctor/report/reftest"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "ref treatment",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "report_id",
+                                "value": "8bbd3936-3f25-4ee5-a228-0789172dd131",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"ref_doctor\":\"1\",\n\t\"name\":\"COVID-19 treatment\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/doctor/report/reftreatment"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "add comment to treatment",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "treatment_id",
+                                "value": "8ca40955-2071-4b28-a037-d1c8866688ff",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"supervisor\":\"25\",\n\t\"comment\":\"This is first comment\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/doctor/treatment/addcomment"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "add media file to treatment",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "treatment_id",
+                                "value": "8ca40955-2071-4b28-a037-d1c8866688ff",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"supervisor\":\"25\",\n\t\"no_of_mediafile\":\"6\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/doctor/treatment/addmediafile"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "prescribe drugs to patient",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "report_id",
+                                "value": "8bbd3936-3f25-4ee5-a228-0789172dd131",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"ref_doctor\":\"7\",\n\t\"drugs\":\"[\\\"drugs-1\\\",\\\"drugs-2\\\",\\\"drugs-3\\\",\\\"drugs-4\\\"]\",\n\t\"doses\":\"[\\\"doses-1\\\",\\\"doses-2\\\",\\\"doses-3\\\",\\\"doses-4\\\"]\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/doctor/report/presdrugs"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "path lab",
+            "item": [
+                {
+                    "name": "do test ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "test_id",
+                                "value": "58a38969-9cfb-448b-9df8-1192216daa72",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"test_result\":\"-ve\",\n\t\"supervisor\":\"14545\",\n\t\"no_of_mediafile\":\"3\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/pathlab/dotest"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "pharmacies",
+            "item": [
+                {
+                    "name": "Give drugs to patient",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "drug_id",
+                                "value": "2ec78d5d-c25d-4ffa-8b1c-7dbae86713c7",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"ignored_drug\":\"[]\",\n\t\"message\":\"[]\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": "http://localhost:3000/pharmacies/givedrugs"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "docTyp",
+            "value": ""
+        },
+        {
+            "key": "patient_id",
+            "value": ""
+        },
+        {
+            "key": "report_id",
+            "value": ""
+        },
+        {
+            "key": "drugs_id",
+            "value": ""
+        },
+        {
+            "key": "test_id",
+            "value": ""
+        }
+    ]
+}
