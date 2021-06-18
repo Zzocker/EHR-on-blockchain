@@ -1,0 +1,61 @@
+{
+	"name": "test-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": false,
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw"
+		},
+		"enableAuthentication": false,
+		"organization": "DevMSP",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"test": {
+			"peers": {
+				"devpeer": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"DevMSP": {
+			"mspid": "DevMSP",
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/devorg/users/Admin@devorg/msp/keystore/priv_sk"
+			},
+			"peers": ["devpeer"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/devorg/users/Admin@devorg/msp/signcerts/Admin@devorg-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"devpeer": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/devorg/peers/devpeer/tls/ca.crt"
+			},
+			"url": "grpc://devpeer:7051",
+			"eventUrl": "grpc://devpeer:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "devpeer"
+			}
+		}
+	}
+}
