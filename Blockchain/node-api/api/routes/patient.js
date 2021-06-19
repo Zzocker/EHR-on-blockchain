@@ -6,9 +6,11 @@ const routes = express.Router()
 routes.post('/register',(req,res)=>{
     contract("INVOKE",["RegisterPatient",req.body.aadhaar,req.body.consenter],(err,payload)=>{
         if (err){
+            console.log(err)
             res.status(500).json(err)
         }
         else{
+            console.log(payload)
             res.status(200).json({
                 "message":"successfully registered"
             })

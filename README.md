@@ -30,6 +30,10 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
     > export CC_PACKAGE=health:----------64hexdigit number----------
     > peer lifecycle chaincode approveformyorg -C test -n health --package-id $CC_PACKAGE -v 1.0 -o orderer:7050 --sequence 1
     > peer lifecycle chaincode commit -C test -n health -v 1.0 -o orderer:7050 --sequence 1
+### Start Hyperledger Explorer to view blocks
+    > cd explorer
+    > docker-compose up -d
+
 ## Contributing
 **First Step:** fork and clone the project repo to your local machine<br>
 **Second step:** Read description and architecture of the project from the project [wiki](https://github.com/Zzocker/EHR-on-blockchain/wiki) page (feel free to introduce better approach)
@@ -50,6 +54,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
     * :heavy_check_mark: Consent
 - :white_large_square: Fabric Network configuration
     * :heavy_check_mark: Local Fabric Network for Test
+    * :heavy_check_mark: Explorer to view metrics and visualize blocks
 - :white_large_square: Fabric SDK [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/a76327a3785763703ffc)
     * :white_large_square: Doctor Side
     * :white_large_square: Hospital Side
@@ -83,6 +88,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 ## Stack
 
 - Hyperledger Fabric (v2.0)
+- Hyperledger Explorer
 - Frontend (HTML, CSS,,)
 - Golang
 - PostgreSQL
@@ -90,5 +96,6 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
 - Docker
 - Kubernetes
 - AWS (VPCs and EC2s)
+
 
 
