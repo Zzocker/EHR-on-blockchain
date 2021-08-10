@@ -20,7 +20,7 @@ This project also helps in cries like the COVID-19 outbreak by providing correct
     > sudo ./docker.sh
     > usermod -a -G docker ${USER}
 ### Start Local Test Fabric Network
-    > cd Blockchain/test-network
+    > cd CI
     > docker-compose up -d
     > docker exec -it cli bash
     > cd channel-artifacts && ./joinchannel.sh
